@@ -2,7 +2,7 @@
 // @name         ASUStudents Free Tickets Helper
 // @namespace    http://tampermonkey.net/
 // @version      1.0
-// @description  Automatically adds all the free students & guest tickets on curent page to cart.
+// @description  Automatically detects and selects all available free student tickets, skips paid options, and adds them to cart after page load.
 // @match        https://am.ticketmaster.com/asustudents/*
 // @grant        none
 // @run-at       document-idle

@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         ASUStudents Auto +1 for Free Tickets (strict-expand, 30s delay)
+// @name         ASUStudents Free Tickets Helper
 // @namespace    http://tampermonkey.net/
-// @version      1.5
-// @description  Waits 30s, expands events safely, sets qty=1 only for $0 tickets (student/guest free), then Add to Cart. Does not touch paid tickets.
+// @version      1.0
+// @description  Automatically adds all the free students & guest tickets on curent page to cart.
 // @match        https://am.ticketmaster.com/asustudents/*
 // @grant        none
 // @run-at       document-idle
@@ -12,7 +12,7 @@
     'use strict';
 
     // ================= CONFIG =================
-    const INITIAL_DELAY_MS = 10000;      // 30s initial wait
+    const INITIAL_DELAY_MS = 10000;      // 10s initial wait
     const CLICK_DELAY_MS = 300;          // pause between clicks
     const WAIT_AFTER_EXPAND_MS = 600;    // wait after expand
     const WAIT_AFTER_PROCESS_MS = 700;   // wait before clicking Add to Cart
@@ -265,12 +265,12 @@
             try {
                 btn.focus();
                 btn.click();
-                console.log('[Auto+1] Clicked Add to Cart.');
+                console.log('Clicked Add to Cart.');
             } catch (err) {
-                console.error('[Auto+1] Failed to click Add to Cart', err);
+                console.error('Failed to click Add to Cart', err);
             }
         } else {
-            console.warn('[Auto+1] Add to Cart button not found.');
+            console.warn('Add to Cart button not found.');
         }
     }
 
@@ -279,7 +279,7 @@
     async function runAll() {
         if (running) return;
         running = true;
-        console.log('[Auto+1] Running processor for free tickets...');
+        console.log('Running helper for free tickets...');
 
         const events = findAllEventElements();
         let any = false;
@@ -289,7 +289,7 @@
                 if (r) any = true;
                 await sleep(CLICK_DELAY_MS);
             } catch (err) {
-                console.error('[Auto+1] Error processing event', err);
+                console.error('Error helper event', err);
             }
         }
 
@@ -297,7 +297,7 @@
             await sleep(WAIT_AFTER_PROCESS_MS);
             await clickAddToCart();
         } else {
-            console.log('[Auto+1] No free tickets were found/changed — not clicking Add to Cart.');
+            console.log('No free tickets were found/changed — not clicking Add to Cart.');
         }
 
         running = false;
@@ -329,7 +329,7 @@
 
     // === Start after initial delay ===
     window.addEventListener('load', async () => {
-        console.log('[Auto+1] Waiting', INITIAL_DELAY_MS / 1000, 'seconds before executing...');
+        console.log('Waiting', INITIAL_DELAY_MS / 1000, 'seconds before executing...');
         await sleep(INITIAL_DELAY_MS);
         // mark init so observer-triggered runs will execute
         window.__autoPlusAndCart_initialized = true;
@@ -339,6 +339,6 @@
     // manual trigger (useful for testing)
     window.__autoPlusAndCart = runAll;
 
-    console.log('[Auto+1] Script loaded: will run after', INITIAL_DELAY_MS / 1000, 'seconds. Use window.__autoPlusAndCart() to run manually.');
+    console.log('Script loaded: will run after', INITIAL_DELAY_MS / 1000, 'seconds. Use window.__autoPlusAndCart() to run manually.');
 
 })();
